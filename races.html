@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="F1 race calendar and results from 1980 to 2026, with winners, poles, fastest laps and full classifications.">
+<meta name="theme-color" content="#08080b">
+<meta property="og:title" content="F1 Stats — driver ratings">
+<meta property="og:description" content="F1 race calendar and results from 1980 to 2026, with winners, poles, fastest laps and full classifications.">
+<meta property="og:type" content="website">
+<title>Race Calendar & Results — F1 Stats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css?v=20261109z0470">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="title-row">
+      <img class="logo" src="logo.svg" alt="">
+      <div>
+        <h1>Race <span>calendar</span></h1>
+        <p class="subtitle">Every Grand Prix, winner, pole and fastest lap. Click a completed round for the full result.</p>
+      </div>
+    </div>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html">Play</a>
+      <a href="leaderboard.html">Rankings</a>
+      <a href="charts.html">Charts</a>
+      <a href="races.html" aria-current="page">Races</a>
+      <a href="teams.html">Teams</a>
+      <a href="cars.html">Cars</a>
+      <a href="tiers.html">Tiers</a>
+      <a href="method.html">Method</a>
+    </nav>
+    <div class="controls">
+      <label>Season
+        <select id="season-select"></select>
+      </label>
+      <button class="ghost tab-btn active" data-filter="all">All rounds</button>
+      <button class="ghost tab-btn" data-filter="done">Completed</button>
+      <button class="ghost tab-btn" data-filter="upcoming">Upcoming</button>
+      <button class="ghost tab-btn" data-filter="sprint">Sprint weekends</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="stat-grid" id="race-stats"></div>
+    <div class="section">
+      <div class="section-head">
+        <h2>Calendar</h2>
+        <p id="race-count"></p>
+      </div>
+      <div class="race-grid" id="race-grid"></div>
+    </div>
+    <div id="race-detail" class="section hidden"></div>
+  </main>
+
+  <footer>
+    <p><b>F1 Stats</b> · Data: <a href="https://www.formula1.com/en/results/2026/races" target="_blank" rel="noreferrer">Formula 1 official results</a>, 1980–2026. ℚ blends race and car-relative skill; Car is a data-fit team score; <a href="method.html">read the method</a>. Updated <span data-updated>1 Nov 2026</span>.</p>
+  </footer>
+</div>
+
+<script src="data.js?v=20261109z0470"></script>
+<script src="common.js?v=20261109z0470"></script>
+<script src="races.js?v=20261109z0470"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="F1 season charts: championship progression, car-adjusted ℚ versus car strength, every season's best driver, constructor points and a full season form guide.">
+<meta name="theme-color" content="#08080b">
+<meta property="og:title" content="F1 Stats — driver ratings">
+<meta property="og:description" content="F1 season charts: championship progression, car-adjusted ℚ versus car strength, every season's best driver, constructor points and a full season form guide.">
+<meta property="og:type" content="website">
+<title>Season Charts — F1 Stats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css?v=20261109z0470">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="title-row">
+      <img class="logo" src="logo.svg" alt="">
+      <div>
+        <h1>Season <span>charts</span></h1>
+        <p class="subtitle">Championship momentum, car-adjusted score vs points, and the full form guide.</p>
+      </div>
+    </div>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html">Play</a>
+      <a href="leaderboard.html">Rankings</a>
+      <a href="charts.html" aria-current="page">Charts</a>
+      <a href="races.html">Races</a>
+      <a href="teams.html">Teams</a>
+      <a href="cars.html">Cars</a>
+      <a href="tiers.html">Tiers</a>
+      <a href="method.html">Method</a>
+    </nav>
+    <div class="controls">
+      <label>Season
+        <select id="season-select"></select>
+      </label>
+      <label>Drivers shown
+        <select id="top-select">
+          <option value="5">Top 5</option>
+          <option value="10" selected>Top 10</option>
+          <option value="200">Top 200</option>
+          <option value="all">All drivers</option>
+        </select>
+      </label>
+      <label id="min-starts-wrap">Min starts
+        <select id="min-starts-select">
+          <option value="1">1</option>
+          <option value="3">3</option>
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <div class="section">
+      <div class="section-head">
+        <h2>Championship progression</h2>
+        <p>Cumulative points after each round, sprints included</p>
+      </div>
+      <div class="chart-box">
+        <svg id="points-chart" viewBox="0 0 1000 430" role="img" aria-label="Cumulative points chart"></svg>
+        <div class="chart-legend" id="points-legend"></div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="section" id="scatter-section">
+        <div class="section-head">
+          <h2 id="scatter-title">Car-adjusted score vs car</h2>
+          <p>Above the diagonal = beating the machinery · hover or focus a driver to highlight</p>
+        </div>
+        <div class="chart-box">
+          <svg id="scatter-chart" viewBox="0 0 720 430" role="img" aria-label="Adjusted score versus car strength scatter"></svg>
+        <div class="scatter-list" id="scatter-list"></div>
+        <div class="scatter-more"><button id="scatter-more-btn" class="ghost hidden" type="button">Show all</button></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-head">
+          <h2>Constructors</h2>
+          <p>Points and estimated car strength</p>
+        </div>
+        <div class="chart-box">
+          <svg id="teams-chart" viewBox="0 0 560 430" role="img" aria-label="Constructor points bars"></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="rawq-section">
+      <div class="section-head">
+        <div>
+          <h2 id="expect-title">Raw Q vs car performance</h2>
+          <p>Raw Q (no car adjustment) against car strength · above the curve = beating the car</p>
+        </div>
+      </div>
+      <div class="chart-box">
+        <svg id="expect-chart" viewBox="0 0 1000 430" role="img" aria-label="Raw Q versus car performance scatter"></svg>
+        <div class="scatter-list" id="expect-list"></div>
+        <div class="scatter-more"><button id="expect-more-btn" class="ghost hidden" type="button">Show all</button></div>
+        <p class="muted small" id="expect-note" style="margin:10px 0 0"><b>Raw Q</b> is a no-car score combining race skill, wins, podiums, average finish and teammate head-to-head. <b>Car</b> is the data-fit team performance score. Lists are sorted by car-adjusted ℚ; the y-axis and Δ use Raw Q. Drivers with 3+ starts are shown. Above the curve means raw results are better than the car predicts. Drivers with identical values share one dot, marked ×N.</p>
+      </div>
+    </div>
+
+    <div class="section" id="best-season-section">
+      <div class="section-head">
+        <h2>Every season's best driver</h2>
+        <p>Top car-adjusted ℚ in each season · bars coloured by team · hover to compare a driver's years</p>
+      </div>
+      <div class="chart-box">
+        <svg id="best-season-chart" viewBox="0 0 1000 720" role="img" aria-label="Best driver of every season by car-adjusted score"></svg>
+        <p class="muted small" id="best-season-note" style="margin:10px 0 0"></p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>Season form guide</h2>
+        <p>Every finish. Green = win, yellow = podium, red = points, dark = DNF.</p>
+      </div>
+      <div class="table-wrap" style="background:transparent;border:none;box-shadow:none;margin:0">
+        <table class="form-table" id="form-table"></table>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p><b>F1 Stats</b> · Data: <a href="https://www.formula1.com/en/results/2026/races" target="_blank" rel="noreferrer">Formula 1 official results</a>, 1980–2026. ℚ blends race and car-relative skill; Car is a data-fit team score; <a href="method.html">read the method</a>. Updated <span data-updated>1 Nov 2026</span>.</p>
+  </footer>
+</div>
+<div class="chart-tooltip" id="tooltip"></div>
+
+<script src="data.js?v=20261109z0470"></script>
+<script src="common.js?v=20261109z0470"></script>
+<script src="charts.js?v=20261109z0470"></script>
+</body>
+</html>

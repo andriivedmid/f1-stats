@@ -1,0 +1,3 @@
+scripts/api_cache/
+scripts/__pycache__/
+.DS_Store

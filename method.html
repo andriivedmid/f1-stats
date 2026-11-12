@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="How the F1 Stats ℚ driver score and Car rating are calculated, including the six components, pairwise fits, uniform scale and data limits.">
+<meta name="theme-color" content="#08080b">
+<meta property="og:title" content="F1 Stats — driver ratings">
+<meta property="og:description" content="How the F1 Stats ℚ driver score and Car rating are calculated, including the six components, pairwise fits, uniform scale and data limits.">
+<meta property="og:type" content="website">
+<title>The Method — F1 Stats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css?v=20261109z0470">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="title-row">
+      <img class="logo" src="logo.svg" alt="">
+      <div>
+        <h1>The <span>method</span></h1>
+        <p class="subtitle">How ℚ and Car are built — and what they deliberately leave out.</p>
+      </div>
+    </div>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html">Play</a>
+      <a href="leaderboard.html">Rankings</a>
+      <a href="charts.html">Charts</a>
+      <a href="races.html">Races</a>
+      <a href="teams.html">Teams</a>
+      <a href="cars.html">Cars</a>
+      <a href="tiers.html">Tiers</a>
+      <a href="method.html" aria-current="page">Method</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="label">Driver-seasons rated</div><div class="value" data-count="rated">1,177</div><div class="sub">1980–2026</div></div>
+      <div class="stat-card"><div class="label">Seasons</div><div class="value" data-count="seasons">47</div><div class="sub">no gaps</div></div>
+      <div class="stat-card"><div class="label">Team-seasons rated</div><div class="value" data-count="cars">585</div><div class="sub">Car score</div></div>
+      <div class="stat-card"><div class="label">Scale</div><div class="value">0–100</div><div class="sub">100 = best ever</div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>What ℚ measures</h2>
+        <p>One number for one driver in one season</p>
+      </div>
+      <p class="doc-p"><b>ℚ</b> is a single 0–100 driver-season score. It is shown identically in the season view and the all-time view; filtering to a season only changes which rows are shown.</p>
+      <p class="doc-p">The final values are placed on a uniform 0–100 rank scale across all 47 seasons: the best driver-season is exactly <b>100.000</b>, the worst is <b>0.000</b>, and every 10-point band contains roughly the same number of driver-seasons.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>How ℚ is built</h2>
+        <p>Six fixed components</p>
+      </div>
+      <table class="doc-table">
+        <thead><tr><th>Component</th><th class="num">Weight</th><th>What it captures</th></tr></thead>
+        <tbody>
+          <tr><td>Race-outcome skill</td><td class="num">40%</td><td>Pairwise fit on every classified race pair, with team-season car effects</td></tr>
+          <tr><td>Teammate points share</td><td class="num">20%</td><td>Share of the team's points, adjusted for teammate strength and standardised inside the season</td></tr>
+          <tr><td>Teammate-relative skill</td><td class="num">20%</td><td>Pairwise fit on teammate head-to-heads only</td></tr>
+          <tr><td>Win rate</td><td class="num">10%</td><td>Wins divided by starts, standardised inside the season</td></tr>
+          <tr><td>Podium rate</td><td class="num">5%</td><td>Podiums divided by starts, standardised inside the season</td></tr>
+          <tr><td>Reliability</td><td class="num">5%</td><td>Finishes divided by starts, standardised inside the season</td></tr>
+        </tbody>
+      </table>
+      <p class="doc-p" style="margin-top:12px">The race-outcome component uses the full classification. If driver <b>i</b> finished ahead of driver <b>j</b>, that counts as a win for <b>i</b>:</p>
+      <code class="formula">logit P(i beats j) = skill[i] − skill[j] + car[team_i] − car[team_j]</code>
+      <p class="doc-p">That fit uses <b>87,319 head-to-head pairs</b> across <b>1,316 driver-seasons</b> and <b>585 team-seasons</b>, with a log loss of <b>0.380</b> per pair. The teammate component fits the <b>4,359 within-team pairs</b> separately, so it measures performance against the one driver in identical machinery.</p>
+      <p class="doc-p">Each component is standardised inside its season. The teammate, win, podium and reliability components are aligned to that season's race-skill scale, so the blend preserves between-season differences. The weights are fixed for every season: <b>40% race-outcome, 20% teammate points share, 20% teammate-relative skill, 10% win rate, 5% podium rate, 5% reliability</b>. They are not adjusted per driver.</p>
+      <p class="doc-p">A points share built against a weak teammate is shrunk toward neutral before it enters the index. Drivers with fewer than 10 starts are shrunk toward neutral, so a one- or two-race substitute does not get an extreme score. For drivers who raced for more than one team, the points component compares them with the teammate in the same races.</p>
+      <p class="doc-p">ℚ is a uniform rank scale: every 10-point band contains roughly the same number of driver-seasons. The same car-adjusted value is used in the season and all-time views.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>Why these six components</h2>
+        <p>Race skill, teammate margin, team scoring, wins, podiums and reliability</p>
+      </div>
+      <p class="doc-p">A pure race-results fit is the best predictor of finishing order, but it rewards the car: a driver in a Mercedes can outrank a stronger midfield season. The car-relative components correct that. Points share captures how much of the team's total a driver delivered, the teammate fit captures the one comparison where the car is identical, and reliability stops a fast-but-fragile season from outranking a complete one. Win and podium rates keep absolute dominance in the score, so a close elite teammate fight is not treated as a weak season.</p>
+      <p class="doc-p">L2 regularisation keeps single-race or small-sample driver-seasons close to zero instead of letting one outlier run away with an extreme rating. The same penalty applies to every driver and team; it is not a per-driver adjustment.</p>
+      <p class="doc-p">A driver-season needs at least one classified finish to be rated. A driver who started but never finished is unrated in both ℚ and Raw Q. The rankings page defaults to 3+ starts so one-off appearances do not dominate the list; set the minimum to 1 to include them.</p>
+      <p class="doc-p">In a season where a driver died, only that driver's rating is withheld. Every other driver in the same season is rated normally. This applies to Depailler 1980, Villeneuve and Paletti 1982, de Angelis 1986, and Ratzenberger and Senna 1994.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>Retirements and reliability</h2>
+        <p>Only genuine finishes are race performances</p>
+      </div>
+      <p class="doc-p">Some result feeds give a retired car a classified position, for example <b>P18, status “Retired”</b>. Those are not treated as finishes. They are excluded from average race finish, race pace relative to the car, and finish consistency; reliability counts only races the driver actually finished. They are also left out of both pairwise fits, so a retirement is neither a win nor a loss against another driver.</p>
+      <p class="doc-p">The descriptive head-to-head columns still compare classified finishes only. If both drivers retire, the race is not counted as a comparison.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>How Car is built</h2>
+        <p>From team performance data</p>
+      </div>
+      <p class="doc-p">Each team-season gets a <b>Car</b> score from a data-fit principal-component model of team performance: win rate, points per race, best car rate and raw pace. The first principal component sets the weights; there are no hand-tuned car weights. Cars are then placed on a rank-linear 0–100 scale across every team-season.</p>
+      <p class="doc-p">On driver pages and the rankings, <b>Car</b> is stint-weighted. A driver who switched teams gets the car score for the races they actually drove, weighted by starts with each team. Lawson's three Red Bull races therefore count for more than a flat RB season rating.</p>
+      <div class="method-cols">
+        <div class="method-card">
+          <h3>Data-fit, not hand-weighted</h3>
+          <p>The weights come from the first principal component of the team performance metrics, not from a manual pace/points/wins blend.</p>
+        </div>
+        <div class="method-card">
+          <h3>Pace input</h3>
+          <p>Raw pace is 45% best grid + 55% best finish per race, averaged over the season. Lower is better, and it is one of the Car inputs.</p>
+        </div>
+        <div class="method-card">
+          <h3>Best car %</h3>
+          <p>The share of races where the team had the fastest raw weekend pace. It is also one of the Car inputs.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>Raw Q diagnostic</h2>
+        <p>No car adjustment, shown on the expectation chart</p>
+      </div>
+      <p class="doc-p"><b>Raw Q</b> is a separate diagnostic, not the headline ℚ. It combines driver-only race skill, win rate, podium rate, average finish and teammate race head-to-head, with no team-season car effect. It deliberately rewards absolute results, so drivers in good cars rise. For drivers with fewer than 10 starts, the race-skill component is blended toward the teammate's same-car estimate so a six-race sample cannot dominate.</p>
+      <p class="doc-p">Raw Q is placed on the same uniform 0–100 rank scale. It appears as the <b>Raw Q</b> column on the rankings page and as the y-axis on the <b>Raw Q vs car performance</b> chart. That chart uses one fixed all-time logistic curve, so the reference is the same in every season. The charts season selector also has an <b>All time</b> option. Mazepin 2021 is pinned to 0.00 there as well.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>What ℚ deliberately excludes</h2>
+        <p>No editorial bonuses</p>
+      </div>
+      <div class="method-cols">
+        <div class="method-card"><h3>No championship bonus</h3><p>Winning the title does not add points. The title is a consequence of race performance, not a separate input.</p></div>
+        <div class="method-card"><h3>No positions-gained reward</h3><p>Gaining places can reward a poor qualifying session. The leaderboard still shows +/− per race for context.</p></div>
+        <div class="method-card"><h3>No race-length bias</h3><p>Points enter as a share of the team's total, not a raw season total. A longer season does not automatically produce a higher score.</p></div>
+      </div>
+      <p class="doc-p" style="margin-top:12px">The only hard floor is the worst-season rule: a full 20+ race season with zero points, fewer than 15% of qualifying wins and fewer than 30% of race wins against the teammate is pinned below the rest of the field. That currently applies only to Mazepin 2021, who is the 0.000.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>Reading the leaderboard</h2>
+        <p>What the columns mean</p>
+      </div>
+      <table class="doc-table">
+        <thead><tr><th>Column</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>ℚ</td><td>Driver-season score, 0–100. The same value is shown in season and all-time views. Hover for the exact stored value.</td></tr>
+          <tr><td>Car</td><td>Fitted team strength for that season, 0–100. From the race-outcome pairwise fit.</td></tr>
+          <tr><td>Mate ±</td><td>Average race-finish delta versus the teammate. Positive means the driver finished ahead on average.</td></tr>
+          <tr><td>C#</td><td>Championship position by official points.</td></tr>
+          <tr><td>Yr#</td><td>Rank within that season by ℚ.</td></tr>
+          <tr><td>+/−</td><td>Positions gained or lost per race, shown for context only. Retirements are excluded.</td></tr>
+          <tr><td>Avg fin</td><td>Average finish in races actually finished. Classified retirements do not count.</td></tr>
+          <tr><td>Avg grid</td><td>Average actual starting grid, including penalty drops.</td></tr>
+          <tr><td>Avg quali</td><td>Average qualifying position. Before 1994, when qualifying data is sparse, this falls back to the grid.</td></tr>
+          <tr><td>Finish %</td><td>Actual finishes divided by starts. Retirements and disqualifications count against it.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>Data and limits</h2>
+        <p>What the model can and cannot see</p>
+      </div>
+      <p class="doc-p">Results, grids, qualifying, fastest laps, sprints, calendars and standings come from the <a href="https://www.formula1.com/en/results/2026/races" target="_blank" rel="noreferrer">official Formula 1 results archive</a>, cached in the repository so rebuilds stay offline. The 2026 season currently covers 19 of 23 rounds, through the Mexico City Grand Prix. A small legacy gap-fill keeps entries that Formula 1 removes from its archive, such as Tyrrell's excluded 1984 season.</p>
+      <p class="doc-p">The fits see finishing positions and status. Grid positions, qualifying positions and fastest laps are shown for context and feed the raw pace diagnostic, not the two Bradley-Terry fits. The model does not see telemetry, race pace in clean air, strategy, damage or penalties. Before 1994, detailed qualifying data is sparse and the starting grid is used for the pace diagnostic and pole counts. Treat ℚ as a strong conversation starter, not a verdict.</p>
+    </div>
+  </main>
+
+  <footer>
+    <p><b>F1 Stats</b> · Data: <a href="https://www.formula1.com/en/results/2026/races" target="_blank" rel="noreferrer">Formula 1 official results</a>, 1980–2026. ℚ blends race and car-relative skill; Car is a data-fit team score; <a href="method.html">read the method</a>. Updated <span data-updated>1 Nov 2026</span>.</p>
+  </footer>
+</div>
+
+<script src="data.js?v=20261109z0470"></script>
+<script src="common.js?v=20261109z0470"></script>
+<script>
+  (function () {
+    const D = window.F1_DATA;
+    if (!D) return;
+    let rated = 0, cars = 0;
+    for (const y of D.years) {
+      rated += D.seasons[y].drivers.filter((d) => d.rating != null).length;
+      cars += D.seasons[y].constructors.length;
+    }
+    const set = (key, value) => {
+      document.querySelectorAll('[data-count="' + key + '"]').forEach((el) => {
+        el.textContent = value.toLocaleString("en-US");
+      });
+    };
+    set("rated", rated);
+    set("seasons", D.years.length);
+    set("cars", cars);
+  })();
+</script>
+</body>
+</html>

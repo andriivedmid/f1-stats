@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Every F1 team-season ranked by Car, a data-fit 0–100 team performance score built from wins, points, best car rate and pace.">
+<meta name="theme-color" content="#08080b">
+<meta property="og:title" content="F1 Stats — driver ratings">
+<meta property="og:description" content="Every F1 team-season ranked by Car, a data-fit 0–100 team performance score built from wins, points, best car rate and pace.">
+<meta property="og:type" content="website">
+<title>All-Time Car Rankings — F1 Stats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css?v=20261109z0470">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="title-row">
+      <img class="logo" src="logo.svg" alt="">
+      <div>
+        <h1>All-time <span>car rankings</span></h1>
+        <p class="subtitle">Every team-season ranked by <b>Car</b>, a data-fit team performance score built from wins, points, best car rate and pace.</p>
+      </div>
+    </div>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html">Play</a>
+      <a href="leaderboard.html">Rankings</a>
+      <a href="charts.html">Charts</a>
+      <a href="races.html">Races</a>
+      <a href="teams.html">Teams</a>
+      <a href="cars.html" aria-current="page">Cars</a>
+      <a href="tiers.html">Tiers</a>
+      <a href="method.html">Method</a>
+    </nav>
+    <div class="controls">
+      <label>Season
+        <select id="season-select"></select>
+      </label>
+      <input id="search" type="search" placeholder="Search team or year…" autocomplete="off" spellcheck="false">
+    </div>
+  </header>
+
+  <main>
+    <div class="stat-grid" id="car-stats"></div>
+    <div class="rank-meta">
+      <span id="car-count"></span>
+      <span class="hint">Click a column header to sort · Car = season-long 0–100 performance · Best car % = races with the fastest weekend pace</span>
+    </div>
+    <div class="table-wrap">
+      <table class="rank-table" id="car-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th data-col="car"><span>Car</span><span class="arrow"></span></th>
+            <th data-col="name" class="left">Team<span class="arrow"></span></th>
+            <th data-col="season">Year<span class="arrow"></span></th>
+            <th data-col="carBase" title="Average of best grid and best finish; lower is better">Pace<span class="arrow"></span></th>
+            <th data-col="bestCarRate" title="Percentage of races where this team had the fastest weekend pace (diagnostic only; does not enter Car)">Best car %<span class="arrow"></span></th>
+            <th data-col="points" title="On-track points, including teams excluded from the championship">Track pts<span class="arrow"></span></th>
+            <th data-col="wins">Wins<span class="arrow"></span></th>
+            <th data-col="podiums">Podiums<span class="arrow"></span></th>
+            <th data-col="poles">Poles<span class="arrow"></span></th>
+            <th data-col="fastestLaps">FL<span class="arrow"></span></th>
+            <th data-col="bestFinish">Best<span class="arrow"></span></th>
+            <th class="left">Drivers</th>
+          </tr>
+        </thead>
+        <tbody id="car-body"></tbody>
+      </table>
+    </div>
+    <div id="more-wrap"><button id="more-btn" class="ghost hidden">Show more</button></div>
+    <p class="muted small" style="text-align:center;max-width:900px;margin:10px auto 0">
+      Car is a data-fit principal-component score of team win rate, points per race, best car rate and raw pace, placed on a rank-linear 0–100 scale across all team-seasons. Every driver who raced for the team shares that effect, and driver Car is stint-weighted. Pace (45% best grid + 55% best finish per race) and Best car % are both inputs to the Car score. Track points include teams excluded from the championship (e.g. McLaren 2007).
+    </p>
+  </main>
+
+  <footer>
+    <p><b>F1 Stats</b> · Data: <a href="https://www.formula1.com/en/results/2026/races" target="_blank" rel="noreferrer">Formula 1 official results</a>, 1980–2026. ℚ blends race and car-relative skill; Car is a data-fit team score; <a href="method.html">read the method</a>. Updated <span data-updated>1 Nov 2026</span>.</p>
+  </footer>
+</div>
+
+<script src="data.js?v=20261109z0470"></script>
+<script src="common.js?v=20261109z0470"></script>
+<script src="cars.js?v=20261109z0470"></script>
+</body>
+</html>

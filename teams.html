@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="F1 constructor standings and fitted car-strength ratings for every team-season from 1980 to 2026.">
+<meta name="theme-color" content="#08080b">
+<meta property="og:title" content="F1 Stats — driver ratings">
+<meta property="og:description" content="F1 constructor standings and fitted car-strength ratings for every team-season from 1980 to 2026.">
+<meta property="og:type" content="website">
+<title>Constructors — F1 Stats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css?v=20261109z0470">
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="title-row">
+      <img class="logo" src="logo.svg" alt="">
+      <div>
+        <h1>Constructor <span>standings</span></h1>
+        <p class="subtitle">Team points and car strength. The Car score is a data-fit team performance score.</p>
+      </div>
+    </div>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html">Play</a>
+      <a href="leaderboard.html">Rankings</a>
+      <a href="charts.html">Charts</a>
+      <a href="races.html">Races</a>
+      <a href="teams.html" aria-current="page">Teams</a>
+      <a href="cars.html">Cars</a>
+      <a href="tiers.html">Tiers</a>
+      <a href="method.html">Method</a>
+    </nav>
+    <div class="controls">
+      <label>Season
+        <select id="season-select"></select>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <div class="stat-grid" id="team-stats"></div>
+    <div class="rank-meta">
+      <span id="team-count"></span>
+      <span class="hint">Click a team for its driver breakdown</span>
+    </div>
+    <div class="table-wrap">
+      <table class="rank-table" id="team-table" style="min-width:900px">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th class="left">Team</th>
+            <th title="Estimated car strength, 0–100">Car</th>
+            <th>Points</th>
+            <th>Wins</th>
+            <th>Podiums</th>
+            <th>Poles</th>
+            <th>FL</th>
+            <th>Best</th>
+            <th class="left">Drivers</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="team-body"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    <p><b>F1 Stats</b> · Data: <a href="https://www.formula1.com/en/results/2026/races" target="_blank" rel="noreferrer">Formula 1 official results</a>, 1980–2026. ℚ blends race and car-relative skill; Car is a data-fit team score; <a href="method.html">read the method</a>. Updated <span data-updated>1 Nov 2026</span>.</p>
+  </footer>
+</div>
+
+<script src="data.js?v=20261109z0470"></script>
+<script src="common.js?v=20261109z0470"></script>
+<script src="teams.js?v=20261109z0470"></script>
+</body>
+</html>
